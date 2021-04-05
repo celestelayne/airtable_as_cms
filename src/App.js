@@ -35,7 +35,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [headers, setHeaders] = useState([])
 
-  const [currentCompany, setCurrentCompany] = useState(initialCompanyState)
+  const localState = JSON.parse(localStorage.getItem("company"));
+  const [currentCompany, setCurrentCompany] = useState(localState || initialCompanyState)
 
   useEffect(()=>{
     fetch(`${airtable_api_url}/${airtable_base}/${airtable_table}`, {
@@ -74,7 +75,7 @@ function App() {
       })
     }
     console.log(company)
-    localStorage.setCurrentCompany('company', JSON.stringify(company));
+    localStorage.setItem("company", JSON.stringify(company));
   }
 
   return (
@@ -85,29 +86,14 @@ function App() {
           to={`/`}><div className="field left">&laquo; Home</div></Link>
       </nav>
 
-      <div className="headers">
-        { headers !== undefined ? (
-          <>
-            <div className="field left">{headers[0]}</div>
-            <div className="field left">{headers[1]}</div>
-            <div className="field left">{headers[2]}</div>
-            <div className="field left">{headers[3]}</div>
-            <div className="field left">{headers[4]}</div>
-            <div className="field left">{headers[5]}</div>
-            <div className="field left">{headers[6]}</div>
-            <div className="field left">{headers[7]}</div>
-            <div className="field left">{headers[8]}</div>
-            <div className="field left">{headers[9]}</div>
-            <div className="field left">{headers[10]}</div>
-          </>
-        ) : null }
-      </div>
+
 
       <Switch>
         <Route 
           exact path='/' 
           render={() => <CompaniesList 
                           isLoading={isLoading} 
+                          headers={headers}
                           airtableData={airtableData}
                           setAirtableData={setAirtableData}
                           showCompanyPage={showCompanyPage}
