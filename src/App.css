@@ -16,6 +16,10 @@
   color: #000;
 }
 
+nav {
+  height: 60px;
+}
+
 .headers {
   font-style: italic;
   margin: 1vh 0;
@@ -89,4 +93,8 @@ li {
 
 .right {
   text-align: right;
+}
+
+a:hover{
+  color: #FF10F0;
 }
