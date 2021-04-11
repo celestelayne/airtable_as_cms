@@ -4,33 +4,31 @@ import {
   Link
 } from "react-router-dom";
 
-function CompanyRow({companies, showCompanyPage}) {
+function CompanyRow({companies_bf, companies_cb, showCompanyPage}) {
 
-  let company_name = companies["Company Name"].replace(/\s/g, "").toLowerCase();
-  console.log(companies)
+  let company_name
+  if(companies_bf){
+    company_name = companies_bf["Company Name"].replace(/\s/g, "").toLowerCase();
+  }
+  
 
   return(
     <>
-      <div className="field left">{companies["First Name"]}</div>
-      <div className="field left">{companies["Last Name"]}</div>
-      <div className="field left">{companies["Gender"]}</div>
-      <div className="field left"><a href={companies["LinkedIn URL"]}>LinkedIn &raquo;</a></div>
-      <div className="field left"><a href={companies["Personal Twitter"]}>Twitter &raquo;</a></div>
-
       <div className="field left">
         <Link
           to={`/${company_name}`}
-          onClick={() => showCompanyPage(companies)}
+          onClick={() => showCompanyPage(companies_bf)}
         >
-          {companies["Company Name"]}
+          {companies_bf["Company Name"]}
         </Link>
       </div>
 
-      <div className="field left"><a href={companies["Company URL"]}>Company URL &raquo;</a></div>
-      <div className="field left"><a href={companies["Company Twitter"]}>Company Twitter &raquo;</a></div>
-      <div className="field left"><a href={companies["Funding Source"]}>Funding Source &raquo;</a></div>
-      <div className="field left">{companies["Stage"]}</div>
-      <div className="field left">{companies["Status"]}</div>
+      <div className="field left"><a href={companies_bf["Company URL"]}>Company URL <i className="fas fa-link"></i></a></div>
+      <div className="field left"><a href={companies_bf["Company Twitter"]}>Company Twitter &raquo;</a></div>
+      <div className="field left"><a href={companies_bf["Funding Source"]}>Funding Source &raquo;</a></div>
+      <div className="field left">{companies_bf["Stage"]}</div>
+      <div className="field left">{companies_bf["Status"]}</div>
+      <div className="field left"></div>
     </>
   )
 

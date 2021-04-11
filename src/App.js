@@ -13,6 +13,7 @@ const process_api_key = process.env.REACT_APP_AIRTABLE_API_KEY;
 const airtable_api_url = process.env.REACT_APP_AIRTABLE_API_URL;
 const airtable_table = process.env.REACT_APP_AIRTABLE_TABLE;
 const airtable_base = process.env.REACT_APP_AIRTABLE_BASE; 
+const airtable_table_cb = process.env.REACT_APP_AIRTABLE_TABLE_CB;
 
 function App() {
 
@@ -28,15 +29,22 @@ function App() {
     company_twitter: '',
     funding_source: '',
     stage: '',
-    status: ''
+    status: '',
+    description: '',
+    founded_date: '',
+    industries: '',
+    location: ''
   };
   
   const [airtableData, setAirtableData] = useState([]);
+  const [blackFounderData, setBlackFounderData] = useState([]);
+  const [crunchBaseData, setCrunchBaseData] = useState([]);
+
+
   const [isLoading, setIsLoading] = useState(true);
   const [headers, setHeaders] = useState([])
 
-  const localState = JSON.parse(localStorage.getItem("company"));
-  const [currentCompany, setCurrentCompany] = useState(localState || initialCompanyState)
+  const [currentCompany, setCurrentCompany] = useState(initialCompanyState)
 
   useEffect(()=>{
     fetch(`${airtable_api_url}/${airtable_base}/${airtable_table}`, {
@@ -44,18 +52,30 @@ function App() {
     })
     .then(res => res.json())
     .then((data) => {
-      setAirtableData(data.records)
+      setBlackFounderData(data.records)
+    })
+    setIsLoading(false);
+  },[])
+
+  useEffect(()=>{
+    fetch(`${airtable_api_url}/${airtable_base}/${airtable_table_cb}`, {
+      "headers": {"Authorization": `Bearer ${process_api_key}`}
+    })
+    .then(res => res.json())
+    .then((data) => {
+      console.log(data)
+      setCrunchBaseData(data.records)
     })
     setIsLoading(false);
   },[])
 
   useEffect(()=>{
     // read headers
-    if (airtableData.length > 0) {
-      let headers = Object.keys(airtableData[0].fields)
+    if (crunchBaseData.length > 0) {
+      let headers = Object.keys(crunchBaseData[0].fields)
       setHeaders(headers);
     }
-  },[airtableData])
+  },[crunchBaseData])
 
   const showCompanyPage = company => {
     if(company){
@@ -66,16 +86,19 @@ function App() {
         gender: company['Gender'],
         linkedin_url: company['LinkedIn URL'],
         personal_twitter: company['Personal Twitter'],
-        company_name: company['Company Name'],
-        company_url: company['Company URL'],
-        company_twitter: company['Company Twitter'],
+        company_name: company['Company Name'] || company['Organization Name'],
+        company_url: company['Company URL'] || company['Website'],
+        company_twitter: company['Company Twitter'] || company['Twitter'],
         funding_source: company['Funding Source'],
         stage: company['Stage'],
-        status: company['Status']
+        status: company['Status'],
+        description: company['Description'],
+        founded_date: company['Founded Date'],
+        industries: company['Industries'],
+        location: company['Headquarters Location']
       })
     }
     console.log(company)
-    localStorage.setItem("company", JSON.stringify(company));
   }
 
   return (
@@ -86,16 +109,16 @@ function App() {
           to={`/`}><div className="field left">&laquo; Home</div></Link>
       </nav>
 
-
-
       <Switch>
         <Route 
           exact path='/' 
           render={() => <CompaniesList 
                           isLoading={isLoading} 
                           headers={headers}
-                          airtableData={airtableData}
-                          setAirtableData={setAirtableData}
+                          blackFounderData={blackFounderData}
+                          setBlackFounderData={setBlackFounderData}
+                          crunchBaseData={crunchBaseData}
+                          setCrunchBaseData={setCrunchBaseData}
                           showCompanyPage={showCompanyPage}
           />}
         />
@@ -103,7 +126,7 @@ function App() {
           path='/:company_name' 
           render={() => <CompanyPage
                           currentCompany={currentCompany} 
-                          airtableData={airtableData}
+                          blackFounderData={blackFounderData}
                           setCurrentCompany={setCurrentCompany}
           />}
         />

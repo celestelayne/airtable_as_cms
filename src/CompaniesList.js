@@ -1,38 +1,50 @@
 import React from 'react';
 
 import CompanyRow from './CompanyRow'
+import CrunchbaseCompanyRow from './CrunchbaseCompanyRow'
 
-function CompaniesList({isLoading, headers, airtableData, showCompanyPage}) {
+function CompaniesList({isLoading, headers, blackFounderData, crunchBaseData, showCompanyPage}) {
+  // console.log(crunchBaseData)
+
   return(
-<>
+    <>
     <div className="headers">
-    { headers !== undefined ? (
+    {/* { headers !== undefined ? ( */}
       <>
-        <div className="field left">{headers[0]}</div>
-        <div className="field left">{headers[1]}</div>
-        <div className="field left">{headers[2]}</div>
-        <div className="field left">{headers[3]}</div>
-        <div className="field left">{headers[4]}</div>
-        <div className="field left">{headers[5]}</div>
-        <div className="field left">{headers[6]}</div>
-        <div className="field left">{headers[7]}</div>
-        <div className="field left">{headers[8]}</div>
-        <div className="field left">{headers[9]}</div>
-        <div className="field left">{headers[10]}</div>
+        <div className="field left">Company Name</div>
+        <div className="field left">Website</div>
+        <div className="field left">Twitter</div>
+        <div className="field left">Funding Source</div>
+        <div className="field left">Stage</div>
+        <div className="field left">Status</div>
+        <div className="field left">Location</div>
       </>
-    ) : null }
+    {/* ) : null } */}
   </div>
 
     <div className="entries">
     {isLoading && <div>Loading....</div>}
 
-    {airtableData !== undefined && airtableData.map( (entry, i) => {
-      const companies = entry.fields;
-      console.log(companies)
+    {blackFounderData !== undefined && blackFounderData.map( (entry, i) => {
+      const companies_bf = entry.fields;
+      // console.log(companies)
       return (
         <div className='entry' id={i} key={i}>
           <CompanyRow 
-            companies={companies}
+            companies_bf={companies_bf}
+            showCompanyPage={showCompanyPage} />
+        </div>
+      )
+     })
+    }  
+
+    {crunchBaseData !== undefined && crunchBaseData.map( (entry, i) => {
+      const companies_cb = entry.fields;
+      // console.log(companies_cb)
+      return (
+        <div className='entry' id={i} key={i}>
+          <CrunchbaseCompanyRow 
+            companies_cb={companies_cb}
             showCompanyPage={showCompanyPage} />
         </div>
       )
